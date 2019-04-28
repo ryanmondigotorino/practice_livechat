@@ -7,8 +7,8 @@
         Login/Sign-up
     </button>
     <div class="dropdown-menu dropdown-menu-right">
-        {{-- <a class="dropdown-item" href="{{route('landing.sign-up.index')}}"><span class="fa fa-user-plus"></span> Sign-up</a>
+        <a class="dropdown-item" href="{{route('landing.home.index')}}"><span class="fa fa-user-plus"></span> Sign-up</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="{{route('landing.login.index')}}"><span class="fa fa-user"></span> Login</a> --}}
+        <a class="dropdown-item" href="{{route('landing.home.index')}}"><span class="fa fa-user"></span> Login</a>
     </div>
 </div>
