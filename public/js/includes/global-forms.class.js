@@ -2,6 +2,42 @@ var GlobalForm = {
 
     INIT: function(){
         this.EVENTS();
+        this.LOGOUT();
+    },
+
+    LOGOUT: function(){
+        $('a.logout_click').on('click',function(){
+            swal({
+                title: "Confirmation",
+                text: "Logout now?",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((result) => {
+                if(result){
+                    var guard = $(this).attr('data-guard'),
+                        model = $(this).attr('data-model'),
+                        id = $(this).attr('data-id'),
+                        token = $(this).attr('data-token'),
+                        url = $(this).attr('data-url');
+                    $.ajax({
+                        type: 'POST',
+                        url: url,
+                        data: {
+                            guard: guard,
+                            model: model,
+                            id: id,
+                            _token : token
+                        },
+                        success:function(result){
+                            if(result == 'success'){
+                                location.reload();
+                            }
+                        }
+                    })
+                }
+            });
+        });
     },
 
     EVENTS: function(){

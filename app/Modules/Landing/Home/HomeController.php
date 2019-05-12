@@ -61,4 +61,15 @@ class HomeController extends Controller
         }
         return $result;
     }
+
+    public function logout(Request $request){
+        $guard = $request->guard;
+        if(Auth::guard($guard)->check()){
+            $accountsData = CF::model($request->model)::find($request->id);
+            $accountsData->account_line = 0;
+            $accountsData->save();
+            Auth::guard($guard)->logout();
+            return 'success';
+        }
+    }
 }

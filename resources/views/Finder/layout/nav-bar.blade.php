@@ -11,6 +11,6 @@
         <a class="dropdown-item" href="#"><span class="fa fa-table"></span> Activity Log</a>
         <a class="dropdown-item" href="#"><span class="fa fa-send"></span> Send Feedback</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item logout_click" href="#"><span class="fa fa-sign-out"></span> Log-out</a>
+        <a class="dropdown-item logout_click" data-url="{{route("landing.home.logout")}}" data-guard="finder" data-model="Finder" data-id="{{$base_data->id}}" data-token="{{csrf_token()}}" href="#"><span class="fa fa-sign-out"></span> Log-out</a>
     </div>
 </div>
