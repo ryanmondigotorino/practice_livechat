@@ -15,12 +15,14 @@ class Finder extends BaseModel{
         'lastname',
         'image',
         'email',
+        'address',
+        'birthdate',
+        'contact_num',
+        'gender',
         'username',
         'password',
-        'account_type',
         'account_line',
         'account_status',
-        'date_registered',
     ];
 
     public static function rules($input = null){
@@ -28,8 +30,10 @@ class Finder extends BaseModel{
         $data['rules'] = [
             'firstname' => [ 'required','regex:/^[a-zA-Z]+$/u','min:3' ],
             'lastname' => [ 'required','regex:/^[a-zA-Z]+$/u','min:3' ],
-            'username' => [ 'required', Rule::unique('admins')->ignore($id), Rule::unique('finders')->ignore($id)],
             'email' => [ 'required', 'email', Rule::unique('admins')->ignore($id), Rule::unique('finders')->ignore($id)],
+            'gender' => [ 'required'],
+            'birthdate' => [ 'required'],
+            'username' => [ 'required', Rule::unique('admins')->ignore($id), Rule::unique('finders')->ignore($id)],
         ];
 
         $data['messages'] = [

@@ -53,40 +53,45 @@ var GlobalForm = {
                     $(targetBtn).prop('disabled',true);
                     $(targetBtn).html('<i class="fa fa-spinner fa-pulse"></i> Processing..');
                 },
-            }).done(function(result){
-                if(result['status'] == 'success'){
-                    $(targetBtn).html('<span class="fa fa-check"></span> Please wait.. <i class="fa fa-spinner fa-pulse"></i>');
-                    if(result['url'] == 'none'){
-                        location.reload();
+                success:function(result){
+                    // console.log(result);
+                    // return false;
+                    if(result['status'] == 'success'){
+                        if(result['url'] == 'none'){
+                            location.reload();
+                        }else{
+                            swal({
+                                title: "Success",
+                                text: result['message'],
+                                icon: result['status'],
+                            }).then((confirm) => {
+                                if(confirm){
+                                    location.href = result['url'];
+                                }
+                            });
+                        }
+                    }else if(result['status'] == 'warning'){
+                        swal({
+                            title: "Warning",
+                            text: result['messages'],
+                            icon: result['status'],
+                            button: "Ok",
+                        });
                     }else{
                         swal({
-                            title: "Success",
-                            text: result['message'],
+                            title: "Error",
+                            text: result['messages'],
                             icon: result['status'],
-                        }).then((confirm) => {
-                            if(confirm){
-                                location.href = result['url'];
-                            }
+                            button: "Ok",
                         });
                     }
-                }else if(result['status'] == 'warning'){
-                    $(targetBtn).prop('disabled',false);
-                    $(targetBtn).html('<span class="fa fa-edit"></span> Re-submit');
-                    swal({
-                        title: "Warning",
-                        text: result['messages'],
-                        icon: result['status'],
-                        button: "Ok",
-                    });
+                }
+            }).done(function(result){
+                if(result['status'] == 'success'){
+                    targetBtn.html('<span class="fa fa-check"></span> Success! Please wait <i class="fa fa-spinner fa-pulse"></i>');
                 }else{
-                    $(targetBtn).prop('disabled',false);
-                    $(targetBtn).html('<span class="fa fa-edit"></span> Re-submit');
-                    swal({
-                        title: "Error",
-                        text: result['messages'],
-                        icon: result['status'],
-                        button: "Ok",
-                    });
+                    targetBtn.prop('disabled',false);
+                    targetBtn.html('<span class="fa fa-edit"></span> Re-submit');
                 }
             });
         });

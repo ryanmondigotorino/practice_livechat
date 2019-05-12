@@ -9,10 +9,10 @@
         <div class="card box_shad" style="width:100%;">
             <div class="card-body">
                 <div class="profile_content">
-                    <h1>Thors Finder</h1><hr>
+                    <h1>Finder chat! </h1><hr>
                     <div class="row">
                         <div class="col-lg-3">
-                            <h5>Get connected with us!</h5>
+                            <h5>New Dating app for all singles! </h5>
                         </div>
                         <div class="col-lg-7">
                             <form action="{{route('landing.home.login-save')}}" class="global-form-submit">
