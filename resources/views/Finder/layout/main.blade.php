@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="{{ URL::asset('public/css/bootstrap/bootstrap.min.css') }} ">
     <link rel="stylesheet" href="{{ URL::asset('public/css/pageloader.css') }} ">
     <link rel="stylesheet" href="{{ URL::asset('public/css/profile.css') }} ">
+    <link rel="stylesheet" href="{{ URL::asset('public/css/loggedprofile.css') }} ">
     <link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet">
     <link rel="shortcut icon" href="{{URL::asset('public/css/assets/mainfavicon.png')}}" type="image/png">
@@ -20,8 +21,8 @@
     </style>
     @yield('pageCss')
 </head>
-<body onload="myFunction()">
-    @include("Landing.layout.nav-bar")
+<body onload="myFunction()" class="bgthors">
+    @include('Finder.layout.nav-bar')
     <div id="loader"></div>
     <div style="display:none;" id="myDiv" class="animate-bottom">
         <div class="content-container mt-5">

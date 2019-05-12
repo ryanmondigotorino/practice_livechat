@@ -11,7 +11,7 @@ class AdminAccess {
 	public function handle($request, Closure $next){
         
 	    if (!Auth::guard('admin')->check()){
-	    	return redirect()->route('landing.home.login');
+	    	return redirect()->route('landing.home.index');
 	    }
 
         return $next($request);

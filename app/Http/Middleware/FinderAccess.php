@@ -11,7 +11,7 @@ class FinderAccess {
 	public function handle($request, Closure $next){
         
 	    if (!Auth::guard('finder')->check()){
-	    	return redirect()->route('landing.home.login');
+	    	return redirect()->route('landing.home.index');
 	    }
 
         return $next($request);

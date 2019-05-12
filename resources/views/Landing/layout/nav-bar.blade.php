@@ -3,12 +3,4 @@
     <nav class="my-2 my-md-0 mr-md-3">
         <a class="p-2 text-dark" href="{{route('landing.home.index')}}">Home</a>
     </nav>
-    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Login/Sign-up
-    </button>
-    <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="{{route('landing.home.index')}}"><span class="fa fa-user-plus"></span> Sign-up</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="{{route('landing.home.index')}}"><span class="fa fa-user"></span> Login</a>
-    </div>
 </div>

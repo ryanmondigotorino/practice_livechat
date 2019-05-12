@@ -5,5 +5,9 @@ return [
         'Landing' => [
             'Home',
         ],
+        'Finder' => [
+            'Home',
+            'Chatroom',
+        ],
     ]
 ];

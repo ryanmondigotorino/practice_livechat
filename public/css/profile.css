@@ -8,7 +8,7 @@
     margin-right: 8%;
 }
 body{
-    font-family: 'Noto Serif', serif;
+    font-family: 'Roboto Condensed', sans-serif;
 }
 .box_shad {
     width: 250px;
@@ -17,6 +17,18 @@ body{
 .card_shad {
     width: 100%;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.btn--bottom-content{
+    bottom: 30px;
+    width: 100%;
+}
+@media (min-width: 320px){
+    .btn--bottom-content{
+        position: absolute;
+    }
+}
+a.dropdown-toggle:hover{
+    cursor: pointer !important;
 }
 .img-cart{
     width: 100%;
@@ -81,9 +93,53 @@ body{
     margin-left:5%;
     margin-right:5%;
 }
+a:hover, a:focus {
+  color: #2a6496;
+  text-decoration: none;
+}
+
+.square-service-block{
+	position:relative;
+	overflow:hidden;
+	margin-top:100px;
+    margin-left: 5%;
+}
+.square-service-block a {
+    background-color: #12580E;
+    border-radius: 30px;
+    display: block;
+    padding: 60px 20px;
+    text-align: center;
+    width: 100%;
+}
+.square-service-block a:hover{
+    background-color: #449340;
+    border-radius: 30px;
+}
+
+.ssb-icon {
+    color: #fff;
+    display: inline-block;
+    font-size: 28px;
+    margin: 0 0 20px;
+}
+
+h2.ssb-title {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 200;
+    margin:0;
+    padding:0;
+    text-transform: uppercase;
+}
+
 .image_profile{
     border-style: solid;
-    border-color: lightgray; 
+    border-color: #FF9E9E; 
+}
+.add-family-image:hover{
+    opacity: 0.5;
+    cursor: pointer;
 }
 .imgup{
     text-align:center;

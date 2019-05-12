@@ -22,9 +22,11 @@ trait ViewRender {
                 $user =  Auth::guard('admin')->user();
                 \View::share('base_data', $user);
             }
-            if (Auth::guard('student')->check()){
-                $user =  Auth::guard('student')->user();
+            if (Auth::guard('finder')->check()){
+                $user =  Auth::guard('finder')->user();
+                $middlename = $user->middlename == null || $user->middlename == '' ? ' ' : ' '.$user->middlename.' ';
                 \View::share('base_data', $user);
+                \View::share('middlename', $middlename);
             }
         }
     }
