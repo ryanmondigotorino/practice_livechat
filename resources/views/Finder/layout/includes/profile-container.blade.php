@@ -13,6 +13,7 @@
                         <h6><b>Address: </b> {{$base_data->address == null || $base_data->address == '' ? 'Address not set.' : $base_data->address}}</h6>
                         <h6><b>Contact Number: </b> {{$base_data->contact_num != null || isset($base_data->contact_num) ? '(+63)-'.$base_data->contact_num : 'No Contact number'}}</h6>
                         <h6><b>Gender: </b> {{$base_data->gender}}</h6>
+                        <h6><b>Age: </b> {{date('Y') - $base_data->birthdate}} years old</h6>
                         <button type="button" class="btn btn-secondary" style="margin-top:1%;" data-toggle="modal" data-target="#imgupload">Change Display Photo</button>
                     </div>
                 </div><hr>

@@ -9,6 +9,7 @@ return [
             'Home',
             'Chatroom',
             'Audit',
+            'Feedback',
         ],
     ]
 ];

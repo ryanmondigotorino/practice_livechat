@@ -38,11 +38,13 @@
                                     <p><b>Gender</b></p>
                                     <p><b>Email Address</b></p>
                                     <p><b>Date Joined</b></p>
+                                    <p><b>Age</b></p>
                                 </div>
                                 <div class="col-lg-8">
                                     <p>: {{$base_data->gender}}</p>
                                     <p>: {{$base_data->email}}</p>
                                     <p>: {{date('M j Y',strtotime($base_data->created_at))}}</p>
+                                    <p>: {{date('Y') - $base_data->birthdate}} years old</p>
                                 </div>
                             </div>
                         </div>

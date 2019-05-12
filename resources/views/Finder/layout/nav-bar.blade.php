@@ -6,10 +6,10 @@
     </nav>
     <a class="fa fa-user pr-2 text-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-hidden="true"></a>
     <div class="dropdown-menu dropdown-menu-right">
-        <a class="dropdown-item" href="#"><span class="fa fa-cog"></span> Change Password</a>
-        <a class="dropdown-item" href="#"><span class="fa fa-edit"></span> Edit My Account</a>
+        <a class="dropdown-item" href="{{route('finder.profile.change-password',$base_data->username)}}"><span class="fa fa-cog"></span> Change Password</a>
+        <a class="dropdown-item" href="{{route('finder.profile.edit-account',$base_data->username)}}"><span class="fa fa-edit"></span> Edit My Account</a>
         <a class="dropdown-item" href="{{route('finder.audit.index',$base_data->username)}}"><span class="fa fa-table"></span> Activity Log</a>
-        <a class="dropdown-item" href="#"><span class="fa fa-send"></span> Send Feedback</a>
+        <a class="dropdown-item" href="{{route('finder.feedback.index',$base_data->username)}}"><span class="fa fa-send"></span> Send Feedback</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item logout_click" data-url="{{route("landing.home.logout")}}" data-guard="finder" data-model="Finder" data-id="{{$base_data->id}}" data-token="{{csrf_token()}}" href="#"><span class="fa fa-sign-out"></span> Log-out</a>
     </div>
