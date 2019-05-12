@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\SendEmailVerification;
 use ClassFactory as CF;
+use AuditLogs as AL;
 use Illuminate\Support\Facades\Storage;
 
 use Auth;
@@ -45,8 +46,10 @@ class HomeController extends Controller
             if($finder || $admin){
                 if(Auth::guard('admin')->check()){
                     $user = Auth::guard('admin')->user();
+                    AL::audits('admin',$user,$request->ip(),'Logged-in');
                 }elseif(Auth::guard('finder')->check()){
                     $user = Auth::guard('finder')->user();
+                    AL::audits('finder',$user,$request->ip(),'Logged-in');
                 }
                 $result['status'] = 'success';
                 $result['url'] = 'none';
@@ -133,6 +136,7 @@ class HomeController extends Controller
         $guard = $request->guard;
         if(Auth::guard($guard)->check()){
             $accountsData = CF::model($request->model)::find($request->id);
+            AL::audits($guard,$accountsData,$request->ip(),'Logged-out');
             $accountsData->account_line = 0;
             $accountsData->save();
             Auth::guard($guard)->logout();

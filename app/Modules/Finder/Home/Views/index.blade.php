@@ -52,7 +52,12 @@
         </div>
     </div>
 </div>
+@include('Finder.layout.includes.profile-dp-modal-template')
 @endsection
 
 @section('pageJs')
+<script src="{{URL::asset('public/js/includes/profile-image-upload.class.js')}}"></script>
+<script>
+    ProfileImageUpload.INIT();
+</script>
 @endsection
