@@ -40,6 +40,7 @@ class FeedbackController extends Controller
             $result = CF::model('Feedback')->saveData($feedback, true);
             $result['url'] = route('finder.profile.index',$base_data->username);
             $result['message'] = 'Feedback successfully sent!';
+            AL::audits('finder',$base_data,$request->ip(),'Send a feedback message.');
             DB::commit();
             return $result;
         }catch(\Exception $e){
