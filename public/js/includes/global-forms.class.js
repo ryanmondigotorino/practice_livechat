@@ -141,20 +141,35 @@ var GlobalForm = {
             window.open($(this).attr('data-url'));
         });
         var geturl = $('div.loaded-messages').attr('data-url');
-        var id = $('div.loaded-messages').attr('data-id');
-        $.ajax({
-            type:'get',
-            url: geturl,
-            data: {
-                id:id
-            }
-        }).done(function(result){
-            $('input[type="hidden"][name="message_request_id"]').val(result['message_request_id'])
-            if(result['messages_details']){
-                result['messages_details'].forEach(function($value,$key){
-                    $('div.loaded-messages').append($value);
-                })
-            }
+        
+        var firebaseConfig = {
+            apiKey: "AIzaSyDhO9wmXNi3dabDvaRIVh5MhOdtFRDjewk",
+            authDomain: "finder-chat-2bbf6.firebaseapp.com",
+            databaseURL: "https://finder-chat-2bbf6.firebaseio.com",
+            projectId: "finder-chat-2bbf6",
+            storageBucket: "finder-chat-2bbf6.appspot.com",
+            messagingSenderId: "846343839126",
+            appId: "1:846343839126:web:9c6012c82b8610b3"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    
+        var rootRef = firebase.database().ref().child('chat-room');
+        rootRef.on("child_added",snap => {
+            $.ajax({
+                type:'get',
+                url: geturl,
+                data: {
+                    id:snap.val()['id']
+                }
+            }).done(function(result){
+                $('input[type="hidden"][name="message_request_id"]').val(result['message_request_id'])
+                if(result['messages_details']){
+                    result['messages_details'].forEach(function($value,$key){
+                        $('div.loaded-messages').append($value);
+                    })
+                }
+            });
         });
         $('form.global-chat-form').on('submit',function(event){
             event.preventDefault();
@@ -164,11 +179,7 @@ var GlobalForm = {
                 url: url,
                 data: $(this).serialize(),
                 success:function(result){
-                    console.log(result);
-                    return false;
-                    result['messages_details'].forEach(function($value,$key){
-                        $('div.loaded-messages').append($value);
-                    });
+                    $('input[type="text"][name="type_msg"].type_msg').val('');
                 }
             })
         });

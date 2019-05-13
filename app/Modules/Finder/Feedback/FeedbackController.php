@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\App;
 use ClassFactory as CF;
 use AuditLogs as AL;
 use Illuminate\Support\Facades\Storage;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\ServiceAccount;
 
 use Auth;
 use View;
@@ -26,6 +28,17 @@ class FeedbackController extends Controller
     }
 
     public function index(Request $request){
+        $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase_credentials.json');
+        $firebase = (new Factory)
+            ->withServiceAccount($serviceAccount)
+            ->create();
+        
+        $database = $firebase->getDatabase();
+        $ref = $database->getReference('chat-room');
+        $getKey = $ref->getChildKeys();
+        $getValue = $ref->getValue();
+        return $getValue;
+        exit;
         return view($this->render('index'));
     }
 

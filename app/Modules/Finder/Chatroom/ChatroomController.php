@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
 use ClassFactory as CF;
 use Illuminate\Support\Facades\Storage;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\ServiceAccount;
 
 use Auth;
 use View;
@@ -24,6 +26,23 @@ class ChatroomController extends Controller
     }
 
     public function index(Request $request,$slug,$slugto = null){
+        // $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase_credentials.json');
+        // $firebase = (new Factory)
+        //     ->withServiceAccount($serviceAccount)
+        //     ->create();
+        
+        // $database = $firebase->getDatabase();
+        // $ref = $database->getReference('chat-room');
+        // $key = $ref->push()->getKey();
+        // $ref->getChild($key)->set([
+        //     'message_request_id' => 1,
+        //     'from_id' => 1,
+        //     'message' => 'Hello'
+        // ]);
+        // $getKey = $ref->getChildKeys();
+        // $getValue = $ref->getValue();
+        // return $getValue[$getKey[count($getKey) - 1]];
+        // exit;
         $base_data = Auth::guard('finder')->user();
         if(isset($slugto)){
             $getSlugDetails = CF::model('Finder')->where('username',$slugto)->get();
@@ -63,6 +82,15 @@ class ChatroomController extends Controller
 
     public function sendchat(Request $request,$slug,$slugto){
         $base_data = Auth::guard('finder')->user();
+        //Firebase INIT
+        $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase_credentials.json');
+        $firebase = (new Factory)
+            ->withServiceAccount($serviceAccount)
+            ->create();
+        
+        $database = $firebase->getDatabase();
+        $ref = $database->getReference('chat-room');
+        //End of Firebase INIT
         $getSlugDetails = CF::model('Finder')->where('username',$slugto)->get();
         if(isset($request->type_msg)){
             DB::beginTransaction();
@@ -72,6 +100,18 @@ class ChatroomController extends Controller
                     'from_id' => $base_data->id,
                     'message' => $request->type_msg
                 );
+                //Inserting firebase
+                $key = $ref->push()->getKey();
+                $getMessage = CF::model('Message')->select('id')->withTrashed()->orderBy('id','desc')->limit(1);
+                $getMessageId = $getMessage->count() > 0 ? $getMessage->get()[0]->id + 1 : 1;
+                $firebase_message = array(
+                    'id' => $getMessageId,
+                    'message_request_id' => $request->message_request_id,
+                    'from_id' => $base_data->id,
+                    'message' => $request->type_msg
+                );
+                $ref->getChild($key)->set($firebase_message);
+                //End firebase insert
                 $result = CF::model('Message')->saveData($message, true);
                 DB::commit();
                 return $result;
@@ -103,6 +143,7 @@ class ChatroomController extends Controller
                 'message_requests.id as message_request_id',
                 'messages.from_id as message_from'
             )
+            ->where('messages.id',$request->id)
             ->leftjoin('message_requests','message_requests.id','messages.message_request_id')
             ->leftjoin('finders','finders.id','messages.from_id');
         $messages_details = $messages_details->where(function($query) use ($base_data){

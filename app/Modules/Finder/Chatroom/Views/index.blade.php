@@ -70,7 +70,6 @@
                     <div class="card-body msg_card_body">
                         <div class="loaded-messages" data-url="{{route('finder.chat-room.send-chat',[$base_data->username,$messages['main_head'][0]->username])}}"></div>
                     </div>
-                    <div class="sample-load-message" data-token="{{csrf_token()}}" data-url="{{route('finder.chat-room.send-chat-sample',[$base_data->username,$messages['main_head'][0]->username])}}"></div>
                     <div class="card-footer">
                         <form action="{{route('finder.chat-room.send-chat',[$base_data->username,$messages['main_head'][0]->username])}}" class="global-chat-form">
                             <div class="input-group">
@@ -94,12 +93,9 @@
 @endsection
 
 @section('pageJs')
+<script src="https://www.gstatic.com/firebasejs/6.0.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script>
 <script>
     GlobalForm.CHATFORM();
-    $(document).ready(function(){
-        var url = $('div.sample-load-message').attr('data-url');
-        var token = $('div.sample-load-message').attr('data-token');
-        
-    });
 </script>
 @endsection

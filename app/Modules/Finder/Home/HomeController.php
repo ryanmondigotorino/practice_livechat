@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\App;
 use ClassFactory as CF;
 use AuditLogs as AL;
 use Illuminate\Support\Facades\Storage;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\ServiceAccount;
 
 use Auth;
 use View;
@@ -191,6 +193,15 @@ class HomeController extends Controller
             $result['url'] = route('finder.chat-room.index',[$base_data->username,$otherUser->username]);
             return $result;
         }else{
+            //Firebase INIT
+            $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase_credentials.json');
+            $firebase = (new Factory)
+                ->withServiceAccount($serviceAccount)
+                ->create();
+            
+            $database = $firebase->getDatabase();
+            $ref = $database->getReference('chat-room');
+            //End of Firebase INIT
             DB::beginTransaction();
             try{
                 $message_request = array(
@@ -205,6 +216,18 @@ class HomeController extends Controller
                     'from_id' => $base_data->id,
                     'message' => 'Hi'
                 );
+                //Inserting firebase
+                $key = $ref->push()->getKey();
+                $getMessage = CF::model('Message')->select('id')->withTrashed()->orderBy('id','desc')->limit(1);
+                $getMessageId = $getMessage->count() > 0 ? $getMessage->get()[0]->id + 1 : 1;
+                $firebase_message = array(
+                    'id' => $getMessageId,
+                    'message_request_id' => $getMRId,
+                    'from_id' => $base_data->id,
+                    'message' => 'Hi'
+                );
+                $ref->getChild($key)->set($firebase_message);
+                //End firebase insert
                 $result = CF::model('Message_request')->saveData($message_request, true);
                 CF::model('Message')->saveData($initial_message, true);
                 AL::audits('finder',$base_data,$request->ip(),'Add message request to '.$otherUser->firstname.' '.$otherUser->lastname);
