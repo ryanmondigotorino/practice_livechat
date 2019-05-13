@@ -141,6 +141,7 @@ var GlobalForm = {
             window.open($(this).attr('data-url'));
         });
         var geturl = $('div.loaded-messages').attr('data-url');
+        var getRef = $('div.loaded-messages').attr('data-ref');
         
         var firebaseConfig = {
             apiKey: "AIzaSyDhO9wmXNi3dabDvaRIVh5MhOdtFRDjewk",
@@ -153,14 +154,27 @@ var GlobalForm = {
         };
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-    
-        var rootRef = firebase.database().ref().child('chat-room-live');
+        
+        var rootRef = firebase.database().ref().child(getRef).orderByKey();
+        // $.ajax({
+        //     type:'get',
+        //     url: geturl,
+        // }).done(function(result){
+        //     $('input[type="hidden"][name="message_request_id"]').val(result['message_request_id'])
+        //     if(result['messages_details']){
+        //         result['messages_details'].forEach(function($value,$key){
+        //             $('div.loaded-messages-sub').append($value);
+        //         })
+        //     }
+        // });
+        
         rootRef.on("child_added",snap => {
+            var id = snap.child('id').val();
             $.ajax({
                 type:'get',
                 url: geturl,
                 data: {
-                    id:snap.val()['id']
+                    id: id
                 }
             }).done(function(result){
                 $('input[type="hidden"][name="message_request_id"]').val(result['message_request_id'])
@@ -173,10 +187,9 @@ var GlobalForm = {
         });
         $('form.global-chat-form').on('submit',function(event){
             event.preventDefault();
-            var url = $(this).attr('action');
             $.ajax({
                 type:'get',
-                url: url,
+                url: geturl,
                 data: $(this).serialize(),
                 success:function(result){
                     $('input[type="text"][name="type_msg"].type_msg').val('');

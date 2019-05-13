@@ -200,7 +200,8 @@ class HomeController extends Controller
                 ->create();
             
             $database = $firebase->getDatabase();
-            $ref = $database->getReference('chat-room-live');
+            $reference = App::environment() == 'local' ? 'chat-room' : 'chat-room-live';
+            $ref = $database->getReference($reference);
             //End of Firebase INIT
             DB::beginTransaction();
             try{
@@ -226,7 +227,7 @@ class HomeController extends Controller
                     'from_id' => $base_data->id,
                     'message' => 'Hi'
                 );
-                $ref->getChild($key)->set($firebase_message);
+                $ref->getChild($getMessageId)->set($firebase_message);
                 //End firebase insert
                 $result = CF::model('Message_request')->saveData($message_request, true);
                 CF::model('Message')->saveData($initial_message, true);

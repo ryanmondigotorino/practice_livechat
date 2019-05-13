@@ -68,7 +68,8 @@
                         </div>
                     </div>
                     <div class="card-body msg_card_body">
-                        <div class="loaded-messages" data-url="{{route('finder.chat-room.send-chat',[$base_data->username,$messages['main_head'][0]->username])}}"></div>
+                        <div class="loaded-messages" data-ref="{{App::environment() == 'local' ? 'chat-room' : 'chat-room-live'}}" data-url="{{route('finder.chat-room.send-chat',[$base_data->username,$messages['main_head'][0]->username])}}"></div>
+                        {{-- <div class="loaded-messages-sub"></div> --}}
                     </div>
                     <div class="card-footer">
                         <form action="{{route('finder.chat-room.send-chat',[$base_data->username,$messages['main_head'][0]->username])}}" class="global-chat-form">

@@ -72,7 +72,8 @@ class ChatroomController extends Controller
             ->create();
         
         $database = $firebase->getDatabase();
-        $ref = $database->getReference('chat-room-live');
+        $reference = App::environment() == 'local' ? 'chat-room' : 'chat-room-live';
+        $ref = $database->getReference($reference);
         //End of Firebase INIT
         $getSlugDetails = CF::model('Finder')->where('username',$slugto)->get();
         if(isset($request->type_msg)){
@@ -93,7 +94,7 @@ class ChatroomController extends Controller
                     'from_id' => $base_data->id,
                     'message' => $request->type_msg
                 );
-                $ref->getChild($key)->set($firebase_message);
+                $ref->getChild($getMessageId)->set($firebase_message);
                 //End firebase insert
                 $result = CF::model('Message')->saveData($message, true);
                 DB::commit();
@@ -114,21 +115,38 @@ class ChatroomController extends Controller
             Session::flash('message',$result['status']);
             return back();
         }
-        $messages_details = CF::model('Message')
-            ->select(
-                'messages.id',
-                'finders.id as finder_id',
-                'finders.image',
-                'finders.firstname',
-                'finders.lastname',
-                'messages.message',
-                'message_requests.to_id as request_to',
-                'message_requests.id as message_request_id',
-                'messages.from_id as message_from'
-            )
-            ->where('messages.id',$request->id)
-            ->leftjoin('message_requests','message_requests.id','messages.message_request_id')
-            ->leftjoin('finders','finders.id','messages.from_id');
+        if(isset($request->id)){
+            $messages_details = CF::model('Message')
+                ->select(
+                    'messages.id',
+                    'finders.id as finder_id',
+                    'finders.image',
+                    'finders.firstname',
+                    'finders.lastname',
+                    'messages.message',
+                    'message_requests.to_id as request_to',
+                    'message_requests.id as message_request_id',
+                    'messages.from_id as message_from'
+                )
+                ->where('messages.id',$request->id)
+                ->leftjoin('message_requests','message_requests.id','messages.message_request_id')
+                ->leftjoin('finders','finders.id','messages.from_id');
+        }else{
+            $messages_details = CF::model('Message')
+                ->select(
+                    'messages.id',
+                    'finders.id as finder_id',
+                    'finders.image',
+                    'finders.firstname',
+                    'finders.lastname',
+                    'messages.message',
+                    'message_requests.to_id as request_to',
+                    'message_requests.id as message_request_id',
+                    'messages.from_id as message_from'
+                )
+                ->leftjoin('message_requests','message_requests.id','messages.message_request_id')
+                ->leftjoin('finders','finders.id','messages.from_id');
+        }
         $messages_details = $messages_details->where(function($query) use ($base_data){
             $query
                 ->orwhere('message_requests.to_id',$base_data->id)
