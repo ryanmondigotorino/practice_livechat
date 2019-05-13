@@ -200,7 +200,7 @@ class HomeController extends Controller
                 ->create();
             
             $database = $firebase->getDatabase();
-            $ref = $database->getReference('chat-room');
+            $ref = $database->getReference('chat-room-live');
             //End of Firebase INIT
             DB::beginTransaction();
             try{

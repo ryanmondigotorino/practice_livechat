@@ -26,23 +26,6 @@ class ChatroomController extends Controller
     }
 
     public function index(Request $request,$slug,$slugto = null){
-        // $serviceAccount = ServiceAccount::fromJsonFile(__DIR__.'/firebase_credentials.json');
-        // $firebase = (new Factory)
-        //     ->withServiceAccount($serviceAccount)
-        //     ->create();
-        
-        // $database = $firebase->getDatabase();
-        // $ref = $database->getReference('chat-room');
-        // $key = $ref->push()->getKey();
-        // $ref->getChild($key)->set([
-        //     'message_request_id' => 1,
-        //     'from_id' => 1,
-        //     'message' => 'Hello'
-        // ]);
-        // $getKey = $ref->getChildKeys();
-        // $getValue = $ref->getValue();
-        // return $getValue[$getKey[count($getKey) - 1]];
-        // exit;
         $base_data = Auth::guard('finder')->user();
         if(isset($slugto)){
             $getSlugDetails = CF::model('Finder')->where('username',$slugto)->get();
@@ -89,7 +72,7 @@ class ChatroomController extends Controller
             ->create();
         
         $database = $firebase->getDatabase();
-        $ref = $database->getReference('chat-room');
+        $ref = $database->getReference('chat-room-live');
         //End of Firebase INIT
         $getSlugDetails = CF::model('Finder')->where('username',$slugto)->get();
         if(isset($request->type_msg)){

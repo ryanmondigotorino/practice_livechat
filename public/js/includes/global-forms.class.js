@@ -154,7 +154,7 @@ var GlobalForm = {
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
     
-        var rootRef = firebase.database().ref().child('chat-room');
+        var rootRef = firebase.database().ref().child('chat-room-live');
         rootRef.on("child_added",snap => {
             $.ajax({
                 type:'get',
