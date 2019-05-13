@@ -1,8 +1,9 @@
 var GlobalForm = {
 
     INIT: function(){
-        this.EVENTS();
         this.LOGOUT();
+        this.EVENTS();
+        this.REDIRECTCHAT();
     },
 
     LOGOUT: function(){
@@ -95,5 +96,81 @@ var GlobalForm = {
                 }
             });
         });
-    }
+    },
+
+    REDIRECTCHAT: function(){
+        $(document).ready(function(){
+            $('#action_menu_btn').click(function(){
+                $('.action_menu').show();
+            });
+            var user = $('li.side-lists');
+            user.each(function(){
+                if(window.location.href.includes($(this).attr('data-user'))){
+                    $('li.side-lists.detail-'+$(this).attr('data-user')).addClass('active');
+                }
+            });
+        });
+        $('li.side-lists').on('click',function(){
+            var url = $(this).attr('data-url');
+            var user = $(this).attr('data-user');
+            if(url.includes(user)){
+                $('li.side-lists').removeClass('active');
+                $('li.side-lists.detail-'+user).addClass('active');
+            }
+            location.href=url;
+        });
+        $('a.chat-room-redirect').on('click',function(){
+            var url = $(this).attr('data-url')
+                token = $(this).attr('data-token');
+            $.ajax({
+                type:'POST',
+                url: url,
+                data: {
+                    _token: token
+                },
+                success:function(result){
+                    location.href=result['route'];
+                }
+            })
+        });
+    },
+    
+    CHATFORM:function(){
+        $('div.action_menu li.view-profile').on('click',function(){
+            $('.action_menu').hide();
+            window.open($(this).attr('data-url'));
+        });
+        var geturl = $('div.loaded-messages').attr('data-url');
+        var id = $('div.loaded-messages').attr('data-id');
+        $.ajax({
+            type:'get',
+            url: geturl,
+            data: {
+                id:id
+            }
+        }).done(function(result){
+            $('input[type="hidden"][name="message_request_id"]').val(result['message_request_id'])
+            if(result['messages_details']){
+                result['messages_details'].forEach(function($value,$key){
+                    $('div.loaded-messages').append($value);
+                })
+            }
+        });
+        $('form.global-chat-form').on('submit',function(event){
+            event.preventDefault();
+            var url = $(this).attr('action');
+            $.ajax({
+                type:'get',
+                url: url,
+                data: $(this).serialize(),
+                success:function(result){
+                    console.log(result);
+                    return false;
+                    result['messages_details'].forEach(function($value,$key){
+                        $('div.loaded-messages').append($value);
+                    });
+                }
+            })
+        });
+    },
 }

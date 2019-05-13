@@ -25,7 +25,39 @@ class HomeController extends Controller
     }
 
     public function index(Request $request){
+        $base_data = Auth::guard('finder')->user();
+        $getuserdata = CF::model('Finder')::find($base_data->id);
+        if($base_data->account_line == 0){
+            $getuserdata->account_line = 1;
+            $getuserdata->save();
+        }
         return view($this->render('index'));
+    }
+
+    public function getfirstacc(Request $request){
+        $base_data = Auth::guard('finder')->user();
+        $getMessagesfrom = CF::model('Message_request')->where('from_id',$base_data->id);
+        $getMessagesto = CF::model('Message_request')->where('to_id',$base_data->id);
+        $array = [];
+        if($getMessagesfrom->count() > 0){
+            $array = $getMessagesfrom
+                ->join('finders','finders.id','message_requests.to_id')
+                ->get();
+        }elseif($getMessagesto->count() > 0){
+            $array = $getMessagesto
+                ->join('finders','finders.id','message_requests.from_id')
+                ->get();
+        }
+        $otherRouteUsername = isset($array[0]->username) ? route('finder.chat-room.index',[$base_data->username,$array[0]->username]) : route('finder.chat-room.index',$base_data->username);
+        return array(
+            'route' => $otherRouteUsername
+        );
+    }
+
+    public function view(Request $request,$slug){
+        $viewUserid = CF::model('Finder')->select('id')->where('username',$slug)->get();
+        $viewUser = CF::model('Finder')::find($viewUserid[0]->id);
+        return view($this->render('contents.view-users'),compact('viewUser'));
     }
 
     public function imageupload(Request $request){
@@ -139,5 +171,62 @@ class HomeController extends Controller
                 'message' => 'Old password doesn\'t match your input.'
             );
         }
+    }
+
+    public function sendmessage(Request $request){
+        $base_data = Auth::guard('finder')->user();
+        $otherUser = CF::model('Finder')::find($request->id);
+        $findValidate1 = CF::model('Message_request')
+            ->where([
+                ['from_id',$base_data->id],
+                ['to_id',$otherUser->id],
+            ])->count();
+        $findValidate2 = CF::model('Message_request')
+            ->where([
+                ['from_id',$otherUser->id],
+                ['to_id',$base_data->id],
+            ])->count();
+        if($findValidate1 > 0 || $findValidate2 > 0){
+            $result['status'] = 'success';
+            $result['url'] = route('finder.chat-room.index',[$base_data->username,$otherUser->username]);
+            return $result;
+        }else{
+            DB::beginTransaction();
+            try{
+                $message_request = array(
+                    'from_id' => $base_data->id,
+                    'to_id' => $otherUser->id,
+                    'status' => 'active'
+                );
+                $getMR = CF::model('Message_request')->select('id')->withTrashed()->orderBy('id','desc')->limit(1);
+                $getMRId = $getMR->count() > 0 ? $getMR->get()[0]->id + 1 : 1;
+                $initial_message = array(
+                    'message_request_id' => $getMRId,
+                    'from_id' => $base_data->id,
+                    'message' => 'Hi'
+                );
+                $result = CF::model('Message_request')->saveData($message_request, true);
+                CF::model('Message')->saveData($initial_message, true);
+                AL::audits('finder',$base_data,$request->ip(),'Add message request to '.$otherUser->firstname.' '.$otherUser->lastname);
+                DB::commit();
+                $result['url'] = route('finder.chat-room.index',[$base_data->username,$otherUser->username]);
+                return $result;
+            }catch(\Exception $e){
+                $errors = json_decode($e->getMessage(), true);
+                $display_errors = [];
+                foreach($errors as $key => $value){
+                    $display_errors[] = $value[0];
+                }
+                $result = [
+                    'status' => 'error',
+                    'message' => implode("\n",$display_errors)
+                ];
+                DB::rollBack();
+                return $result;
+            }
+            Session::flash('message',$result['status']);
+            return back();
+        }
+        
     }
 }
